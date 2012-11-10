@@ -27,7 +27,7 @@ import sim.*;
  */
 public class SimulationWorker extends SwingWorker<String, Void> {
 
-    public long seed;
+    public long seed;                           // this has no effect for now
     public int N;                                 // iterations
     public long lambda;                         // mean arrival time
     public long mu;                              // mean service time

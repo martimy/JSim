@@ -56,11 +56,6 @@ public class JSim extends JFrame {
     private JMenu mnuHelp = new JMenu("Help"); // Help Menu entry
     private JMenuItem mnuItemAbout = new JMenuItem("About"); // About Entry
     private JProgressBar progressBar;
-    // A copyright statement
-    private String copyright = "JSim  Copyright (C) 2007  Maen Artimy\n"
-            + "This program comes with ABSOLUTELY NO WARRANTY; see http://www.gnu.org/licenses/ for details.\n"
-            + "This is free software, and you are welcome to redistribute it\n"
-            + "under certain conditions; see http://www.gnu.org/licenses/ for details.\n";
 
     /**
      * Create and show the GUI.
@@ -75,6 +70,21 @@ public class JSim extends JFrame {
         mnuHelp.add(mnuItemAbout);
         mb.add(mnuFile);
         mb.add(mnuHelp);
+
+        mnuItemAbout.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent evt) {
+                JDialog d = new AboutDialog(JSim.this);
+                d.setVisible(true);
+            }
+        });
+
+        mnuItemQuit.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent evt) {
+                terminate();
+            }
+        });
 
         // Create an array of input text fields
         inField = new JTextField[field.values().length];
@@ -130,9 +140,7 @@ public class JSim extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent we) {
-                readInFields();
-                Settings.instance().save();
-                System.exit(0);
+                terminate();
             }
         });
 
@@ -154,8 +162,7 @@ public class JSim extends JFrame {
             @Override
             protected void done() {
                 try {
-                    String st = get();
-                    outArea.setText(copyright + "\n" + st);
+                    outArea.setText(get());
                 } catch (Exception ex) {
                     System.err.println(ex);
                 } finally {
@@ -218,6 +225,13 @@ public class JSim extends JFrame {
                 initInFields();
             }
         });
+    }
+
+    public void terminate() {
+        readInFields();
+        Settings.instance().save();
+        System.exit(0);
+
     }
 
     /**
