@@ -35,7 +35,6 @@ public class SimulationWorker extends SwingWorker<String, Void> {
     public int simTime;                        // simulation time
     public double[] A = null;                          // stats array
 
-
     @Override
     protected String doInBackground() throws Exception {
         Scheduler sc;
@@ -57,7 +56,7 @@ public class SimulationWorker extends SwingWorker<String, Void> {
             DepartureEvent.serviceRate(ts);
 
             qs = SimQueue.instance();
-            qs.setQueueSize(K);
+            //qs.setQueueSize(K);
 
             sc = Scheduler.instance();
             try {
@@ -83,18 +82,22 @@ public class SimulationWorker extends SwingWorker<String, Void> {
             Scheduler.reset();
         }
 
-        // Theoretical results
-        double rho = (double) mu / lambda;
-        double L = rho / (1 - rho);
-        double Lq = rho * rho / (1 - rho);
-        double W = mu / (1 - rho);
-        double Wq = rho * mu / (1 - rho);
+        // Analytical results
+        double rho = (double) mu / lambda;                // system utilization *
+        double L = rho / (1 - rho);                     // mean number of customers in the system
+        double Lq = L * rho;                                  // mean length of queue
+        double W = mu / (1 - rho);                     // mean time spent in the system *
+        double Wq = mu * L;                               // mean time spent in the queue *
+
+        // Note that
+        // W = lambda * L = rho * Wq
+        // Wq = lambda * Lq = W / rho
 
         StringBuilder st = new StringBuilder();
         st.append(String.format("Total Customers Served = %4.2f\n", A[0] / N));
-        st.append(String.format("Average Queue Delay = %4.2f (%4.2f)\n", A[1] / N, Wq));
-        st.append(String.format("Average Queue size = %4.2f : (%4.2f)\n", A[2] / N, Lq));
-        st.append(String.format("Average utilization = %4.2f : (%4.2f)\n", A[3] / N, rho));
+        st.append(String.format("Average Queue Delay = %4.2f (Analytically %4.2f)\n", A[1] / N, Wq));
+        st.append(String.format("Average Queue size = %4.2f : (Analytically %4.2f)\n", A[2] / N, Lq));
+        st.append(String.format("Average utilization = %4.2f : (Analytically %4.2f)\n", A[3] / N, rho));
         st.append(String.format("Total Queue Delay = %4.2f\n", A[4] / N));
         st.append("Sanity check = " + A[0] + " + " + A[6] + " + " + A[7] + " = " + A[5] + " " + (A[0] + A[6] + A[7] == A[5]));
 
