@@ -15,30 +15,30 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
 
 /**
- * A random number generator based on exponential distribution.
+ * This is a class that has a RandomNumber interface but always returns a fixed number.
  *
  * @author martimy
  */
-public class NoRandom extends Random implements RandomNumber{
+public class NoRandom extends Random implements RandomNumber {
+
     protected long mean;
-    
+
     /**
-     * Constructor of ExpoRandom.
+     * Constructor of NoRandom.
      * @param seed, mean
      */
     public NoRandom(long mean) {
         super(0);
         this.mean = mean;
     }
-    
+
     /**
-     * Returns a random number from an exponential distribution
+     * Returns a fixed number
      */
     public long getNumber() {
         return mean;

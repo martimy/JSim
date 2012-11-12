@@ -15,7 +15,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package sim;
 
 import java.util.*;
@@ -26,26 +25,30 @@ import java.util.*;
  * @author martimy
  */
 public class Scheduler { //Singular class
+
     private static Scheduler uniqueInstance;
     private boolean finished;
     private Time currentTime, lastEventTime;
     private SortedSet eventQueue;
-    
-    
     /**
      * Used by the eventQueue to order events in ascending time order.
      */
     static final Comparator<SimEvent> TIME_ORDER = new Comparator<SimEvent>() {
+
         public int compare(SimEvent e1, SimEvent e2) {
             int c = e1.time.compareTo(e2.time);
-            if(c != 0) return c;
-            else if (e1.hashCode() < e2.hashCode()) return -1; // if time is equal, the tie must be broken by the hashcode
-            else if (e1.hashCode() > e2.hashCode()) return 1;
+            if (c != 0) {
+                return c;
+            } else if (e1.hashCode() < e2.hashCode()) {
+                return -1; // if time is equal, the tie must be broken by the hashcode
+            } else if (e1.hashCode() > e2.hashCode()) {
+                return 1;
+            }
 
             return 0;
         }
     };
-    
+
     /**
      * Constructor of a Scheduler object.
      * The private constructor prevents creating an object of this class outside the class itself following
@@ -57,7 +60,7 @@ public class Scheduler { //Singular class
         lastEventTime = new Time(0);
         finished = false;
     }
-    
+
     /**
      * Returns an instance of this class.
      */
@@ -67,7 +70,7 @@ public class Scheduler { //Singular class
         }
         return uniqueInstance;
     }
-    
+
     /**
      * Deletes the cuurent uniqueInstance and returns a new one.
      */
@@ -76,23 +79,26 @@ public class Scheduler { //Singular class
         uniqueInstance = new Scheduler();
         return uniqueInstance;
     }
-    
+
     /**
      * Inserts a new event in the event queue ensuring that the new event is not older than the
      * current time.
      */
     public void addEvent(SimEvent se) throws SIMException {
-        if(currentTime.compareTo(se.time) == 1) throw new SIMException("Attempt to add event in the past");
-        else if(!eventQueue.add(se)) throw new SIMException("Event cannot be added due to matching time");
+        if (currentTime.compareTo(se.time) == 1) {
+            throw new SIMException("Attempt to add event in the past");
+        } else if (!eventQueue.add(se)) {
+            throw new SIMException("Event cannot be added due to matching time");
+        }
     }
-    
+
     /**
      * Terminates the uniqueInstance.
      */
     public void finish() {
         finished = true;
     }
-    
+
     /**
      * Returns the first event in the event queue and update the current time.
      */
@@ -104,21 +110,21 @@ public class Scheduler { //Singular class
         eventQueue.remove(se);
         return se;
     }
-    
+
     /**
      * Goes through the event queue executing each event until the queue is empty
      * or the finish() method is called.
      */
     public void run() {
         SimEvent se;
-        
-        while(!eventQueue.isEmpty() && !finished) {
+
+        while (!eventQueue.isEmpty() && !finished) {
             se = getNextEvent();
             se.run();
             //System.out.println(se);
         }
     }
-       
+
     /**
      * Returns current time
      */

@@ -48,15 +48,17 @@ public class SimulationWorker extends SwingWorker<String, Void> {
 
         // Repeat the simulation N times
         for (int i = 0; i < N; i++) {
-            RandomNumber ta = new ExpoRandom(123 * (i + 1), lambda);
-            RandomNumber ts = new ExpoRandom(456 * (i + 1), mu);
+            RandomNumber ta = new ExpoRandom(seed * (i + 1), lambda);
+            RandomNumber ts = new ExpoRandom(seed * (i + 5), mu);
             //RandomNumber ts = new NormalRandom(456*(i+1), mu, 9);
 
             ArrivalEvent.arrivalRate(ta);
             DepartureEvent.serviceRate(ts);
 
             qs = SimQueue.instance();
-            //qs.setQueueSize(K);
+            if(K>-1) {
+                qs.setQueueSize(K);
+            }
 
             sc = Scheduler.instance();
             try {

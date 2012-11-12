@@ -1,5 +1,5 @@
 //    JSim is a discrete event simulator of an M/M/1 queue system.
-//    Copyright (C) 2007  Maen Artimy
+//    Copyright (C) 2007-2012  Maen Artimy
 //
 //    This file is part of JSim.
 //
@@ -15,13 +15,12 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package sim;
 
 import rand.*;
 
 /**
- * An arrival event in a queuing system of unlimited queue size.
+ * An arrival event in a queue system.
  *
  * @author martimy
  */
@@ -51,7 +50,8 @@ public class ArrivalEvent extends SimEvent {
      * Upon execution of this event,
      * Schedule another arrival event based on current arrival rate.
      * If server is not busy, increase the number of customers served by one and schedule a departure event;
-     *      otherwise, increase the number of customers in the queue and add the event to the system's queue.
+     * otherwise, increase the number of customers in the queue and add the event to the system's queue.
+     *
      */
     public void run() {
         Scheduler sc = Scheduler.instance();

@@ -15,13 +15,12 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
 
 /**
- * A random number generator based on exponential distribution.
+ * A random number generator based on Empirical distribution.
  *
  * @author martimy
  */
@@ -46,16 +45,16 @@ public class EmpiricalRandom extends Random implements RandomNumber {
     }
 
     /**
-     * Returns a random number from an exponential distribution
+     * Returns a random number from an Empirical distribution
      */
     public long getNumber() {
         double u = nextDouble();
         int n = x.length;
 
-        while (n>0 && u < x[n-1]) {
+        while (n > 0 && u < x[n - 1]) {
             n--;
         }
-        
+
         return new Double(n).longValue();
     }
 }

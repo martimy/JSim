@@ -1,5 +1,5 @@
 //    JSim is a discrete event simulator of an M/M/1 queue system.
-//    Copyright (C) 2007  Maen Artimy
+//    Copyright (C) 2007-2012  Maen Artimy
 //
 //    This file is part of JSim.
 //

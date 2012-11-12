@@ -1,5 +1,5 @@
 //    JSim is a discrete event simulator of an M/M/1 queue system.
-//    Copyright (C) 2007  Maen Artimy
+//    Copyright (C) 2007-2012  Maen Artimy
 //
 //    This file is part of JSim.
 //
@@ -15,7 +15,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package sim;
 
 /**

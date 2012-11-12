@@ -15,7 +15,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
@@ -25,11 +24,13 @@ import java.util.Random;
  *
  * @author martimy
  */
-public class UniformRandom extends Random implements RandomNumber{
+public class UniformRandom extends Random implements RandomNumber {
+
     protected long min, max;
-    
+
     /**
-     * Constructor of ExpoRandom.
+     * Constructor of UniformRandom
+     *
      * @param seed, mean
      */
     public UniformRandom(long seed, long min, long max) {
@@ -37,7 +38,7 @@ public class UniformRandom extends Random implements RandomNumber{
         this.min = min;
         this.max = max;
     }
-    
+
     /**
      * Returns a random number from an exponential distribution
      */

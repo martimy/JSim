@@ -15,32 +15,33 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
 
 /**
- * A random number generator based on exponential distribution.
+ * A random number generator based on an Exponential distribution.
  *
  * @author martimy
  */
-public class ExpoRandom extends Random implements RandomNumber{
+public class ExpoRandom extends Random implements RandomNumber {
+
     protected long mean;
-    
+
     /**
-     * Constructor of ExpoRandom.
+     * Constructor of ExpoRandom
+     * 
      * @param seed, mean
      */
     public ExpoRandom(long seed, long mean) {
         super(seed);
         this.mean = mean;
     }
-    
+
     /**
      * Returns a random number from an exponential distribution
      */
     public long getNumber() {
-        return ( new Double( -Math.log( nextDouble()) * mean) ).longValue();
+        return (new Double(-Math.log(nextDouble()) * mean)).longValue();
     }
 }

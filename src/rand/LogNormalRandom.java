@@ -15,13 +15,12 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
 
 /**
- * A random number generator based on Normal distribution.
+ * A random number generator based on LogNormal distribution.
  *
  * @author martimy
  */
@@ -30,7 +29,7 @@ public class LogNormalRandom extends Random implements RandomNumber {
     protected long mean, std;
 
     /**
-     * Constructor of ExpoRandom.
+     * Constructor of LogNormalRandom.
      * @param seed, mean, std
      */
     public LogNormalRandom(long seed, long mean, long std) {
@@ -40,17 +39,17 @@ public class LogNormalRandom extends Random implements RandomNumber {
     }
 
     /**
-     * Returns a random number from a Normal distribution
+     * Returns a random number from a LogNormal distribution
      */
     public long getNumber() {
         // needs testing
         double mean2 = mean * mean;
         double std2 = std * std;
-        double mu = Math.log(mean) - 0.5*Math.log(1+std2/mean2);
-        double segma = Math.sqrt(Math.log(std2/mean2 + 1));
+        double mu = Math.log(mean) - 0.5 * Math.log(1 + std2 / mean2);
+        double segma = Math.sqrt(Math.log(std2 / mean2 + 1));
 
         double Y = nextGaussian();
-        double X = Math.exp(Y*segma+mu);
+        double X = Math.exp(Y * segma + mu);
         return (new Double(X)).longValue();
     }
 }

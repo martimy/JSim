@@ -15,7 +15,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
-
 package rand;
 
 import java.util.Random;
@@ -25,25 +24,25 @@ import java.util.Random;
  *
  * @author martimy
  */
-public class NormalRandom extends Random implements RandomNumber{
+public class NormalRandom extends Random implements RandomNumber {
+
     protected long mean, std;
-    
+
     /**
-     * Constructor of ExpoRandom.
+     * Constructor of NormalRandom
+     * 
      * @param seed, mean, std
      */
-    
     public NormalRandom(long seed, long mean, long std) {
         super(seed);
         this.mean = mean;
         this.std = std;
     }
-    
+
     /**
      * Returns a random number from a Normal distribution
      */
     public long getNumber() {
-        return ( new Double( nextGaussian() * std + mean ) ).longValue();
+        return (new Double(nextGaussian() * std + mean)).longValue();
     }
 }
-
