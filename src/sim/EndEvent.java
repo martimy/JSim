@@ -24,25 +24,27 @@ package sim;
  */
 public class EndEvent extends SimEvent {
 
+    private SimQueue qs;
+
     /**
      * Constructor of the end event.
      */
-    public EndEvent(Time t, Object o) {
+    public EndEvent(Time t, SimQueue o) {
         super(t, o);
+        qs = o;
     }
 
-    public EndEvent(Time t) {
+    /*public EndEvent(Time t) {
         super(t, null);
-    }
+    }*/
 
     /**
      * Executes the end-simulation event. The scheduler ignores all subsequent
      * events in the event queue.
      */
-    void run() {
+    public void run() {
         Scheduler sc = Scheduler.instance();
-        SimQueue qs = SimQueue.instance();
-        qs.update(time.minus(sc.getLastEventTime()));
+        qs.update(time, sc.getLastEventTime());
         sc.finish();
         //System.out.println("End ="+time);
     }

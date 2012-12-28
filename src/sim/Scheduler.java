@@ -138,4 +138,5 @@ public class Scheduler { //Singular class
     public Time getLastEventTime() {
         return lastEventTime;
     }
+
 }

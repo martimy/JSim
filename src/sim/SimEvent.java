@@ -24,8 +24,8 @@ package sim;
  */
 public abstract class SimEvent {
 
-    Time time;
-    Object obj;
+    public Time time;
+    public Object obj;
     //int id;
 
     public SimEvent(Time t, Object o) {
@@ -42,5 +42,5 @@ public abstract class SimEvent {
     /**
      * Must be overridden to describe how the event should be executed.
      */
-    abstract void run();
+    abstract public void run();
 }

@@ -17,8 +17,6 @@
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
 package sim;
 
-import rand.*;
-
 /**
  * An arrival event in a queue system.
  *
@@ -26,67 +24,66 @@ import rand.*;
  */
 public class ArrivalEvent extends SimEvent {
 
-    public static RandomNumber en;
+    
+    private SimQueue qs;
 
     /**
      * Constructor of the arrival event
      */
-    public ArrivalEvent(Time t, Object o) {
+    public ArrivalEvent(Time t, SimQueue o) {
         super(t, o);
-    }
-
-    public ArrivalEvent(Time t) {
-        super(t, null);
-    }
-
-    /**
-     * Sets the distribution function of the arrival rate
-     */
-    public static void arrivalRate(RandomNumber r) {
-        en = r;
+        qs = o;
     }
 
     /**
      * Upon execution of this event,
-     * Schedule another arrival event based on current arrival rate.
-     * If server is not busy, increase the number of customers served by one and schedule a departure event;
-     * otherwise, increase the number of customers in the queue and add the event to the system's queue.
+     *
+     * select a queue to enter (based on some criteria)
+     * is there an empty space in the queue?
+     *  if yes:
+     *      is there a free server?
+     *          if yes:
+     *              increment number of busy servers
+     *          if no:
+     *              increase number of customers in queue
+     *  if no:
+     *          drop customer
+     *  Schedule another arrival event based on current arrival rate.
      *
      */
     public void run() {
         Scheduler sc = Scheduler.instance();
-        SimQueue qs = SimQueue.instance();
-        qs.update(time.minus(sc.getLastEventTime()));
-        qs.totalCustomers++;
+        int qID = qs.getFreeQueue();
+        //System.err.println("Enter "+qID);
+        qs.update(time, sc.getLastEventTime());   // update all queue curves
+        qs.addCustomer();                              // to the system
+
+        // if there is a free server then the departure event can be secheduled immediately
+        // otherwise, this arrival event is queued or dropped depending on the space
+        // left in the queue(s)
+        if (!qs.busyServers()) {
+            qs.numCustomersServed++;
+            qs.incBusyServers();
+
+            try {
+                sc.addEvent(new DepartureEvent(time.plus(qs.eo.getNumber()), qs));
+            } catch (SIMException ex) {
+                System.err.println("Exception : " + ex);
+                System.exit(0);
+            }
+        } else if (!qs.full()) {
+            qs.getQueue(qID).addLast(this);
+        } else {
+            qs.numCustomersDropped++;
+        }
 
         // Generate subsequent arrival event
         try {
-            sc.addEvent(new ArrivalEvent(/*id+1,*/time.plus(en.getNumber())));
+            sc.addEvent(new ArrivalEvent(time.plus(qs.en.getNumber()), qs));
         } catch (SIMException ex) {
             System.err.println("Exception : " + ex);
             System.exit(0);
         }
 
-        // if server is free then the departure event can be secheduled immediately
-        // otherwise, this arrival event is queued or dropped depending on the space
-        // left in the queue
-        if (!qs.busyServer) {
-            //sc.totalQueueDelay += 0;
-            qs.numCustomersServed++;
-            qs.busyServer = true;
-
-            try {
-                sc.addEvent(new DepartureEvent(/*id,*/time.plus(DepartureEvent.eo.getNumber())));
-            } catch (SIMException ex) {
-                System.err.println("Exception : " + ex);
-                System.exit(0);
-            }
-
-        } else if (!qs.full()) {
-            qs.numInQueue++;
-            qs.queue.addLast(this);
-        } else {
-            qs.numCustomersDropped++;
-        }
     }
 }

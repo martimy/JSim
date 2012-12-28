@@ -17,8 +17,6 @@
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
 package sim;
 
-import rand.*;
-
 /**
  * A departure event in queue system.
  *
@@ -26,45 +24,39 @@ import rand.*;
  */
 public class DepartureEvent extends SimEvent {
 
-    public static RandomNumber eo;
+    private SimQueue qs;
 
     /** Creates a new instance of DepartureEvent */
-    public DepartureEvent(Time t, Object o) {
+    public DepartureEvent(Time t, SimQueue o) {
         super(t, o);
-    }
-
-    public DepartureEvent(Time t) {
-        super(t, null);
-    }
-
-    public static void serviceRate(RandomNumber r) {
-        eo = r;
+        qs = o;
     }
 
     /**
-     * If the queue is not empty, schedule a departure event for the first customer
+     * If there is any occupied queue, schedule a departure event for the first customer
      * in the queue; otherwise, do nothing.
      */
     public void run() {
         Scheduler sc = Scheduler.instance();
-        SimQueue qs = SimQueue.instance();
-        qs.update(time.minus(sc.getLastEventTime()));
+        qs.update(time, sc.getLastEventTime());
 
-        if (qs.numInQueue > 0) {
-            ArrivalEvent ae = (ArrivalEvent) qs.queue.removeFirst();
+        if (qs.occupied()){
+            int qID = qs.getBusyQueue();
+            //System.err.println("Exit "+qID);
+            ArrivalEvent ae = (ArrivalEvent) qs.getQueue(qID).removeFirst();
             Time delay = time.minus(ae.time);
             qs.totalQueueDelay.add(delay);
-            qs.numInQueue--;
             qs.numCustomersServed++;
             try {
-                sc.addEvent(new DepartureEvent(/*ae.id,*/time.plus(eo.getNumber())));
+                sc.addEvent(new DepartureEvent(time.plus(qs.eo.getNumber()), qs));
             } catch (SIMException ex) {
                 System.err.println("Exception : " + ex);
                 System.exit(0);
             }
 
         } else {
-            qs.busyServer = false;
+            //System.err.println("Exiting ");
+            qs.decBusyServers();
         }
     }
 }

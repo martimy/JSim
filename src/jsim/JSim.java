@@ -36,9 +36,12 @@ public class JSim extends JFrame {
         seedText("Random Seed: "),
         lambdaText("Mean Arrival Time: "),
         muText("Mean Service Time: "),
+        numQueuesText("Number of Queues: "),
+        numServersText("Number of Servers: "),
         qSizeText("Queue Size: "),
-        iterText("Number of Samples: "),
-        stText("Simulation Time: ");
+        stText("Simulation Time: "),
+        iterText("Number of Runs: "),
+        outFileText("Output File: ");
         private String label;
 
         field(String s) {
@@ -189,8 +192,11 @@ public class JSim extends JFrame {
         worker.lambda = Long.parseLong(inField[field.lambdaText.ordinal()].getText());
         worker.mu = Long.parseLong(inField[field.muText.ordinal()].getText());
         worker.K = Integer.parseInt(inField[field.qSizeText.ordinal()].getText());
+        worker.numQueues = Integer.parseInt(inField[field.numQueuesText.ordinal()].getText());
+        worker.numServers = Integer.parseInt(inField[field.numServersText.ordinal()].getText());
         worker.simTime = Integer.parseInt(inField[field.stText.ordinal()].getText());
-
+        worker.outFile = inField[field.outFileText.ordinal()].getText();
+        
         //progressBar.setMaximum(worker.N);
         worker.execute();
     }
@@ -202,7 +208,10 @@ public class JSim extends JFrame {
         inField[field.lambdaText.ordinal()].setText("" + st.get("ARRIVAL"));
         inField[field.muText.ordinal()].setText("" + st.get("SERVICE"));
         inField[field.qSizeText.ordinal()].setText("" + st.get("QUEUE"));
+        inField[field.numQueuesText.ordinal()].setText("" + st.get("NUMQUEUES"));
+        inField[field.numServersText.ordinal()].setText("" + st.get("NUMSERVERS"));
         inField[field.stText.ordinal()].setText("" + st.get("TIME"));
+        inField[field.outFileText.ordinal()].setText("" + st.get("OUTFILE"));
     }
 
     private void readInFields() {
@@ -212,8 +221,10 @@ public class JSim extends JFrame {
         st.set("ARRIVAL", inField[field.lambdaText.ordinal()].getText());
         st.set("SERVICE", inField[field.muText.ordinal()].getText());
         st.set("QUEUE", inField[field.qSizeText.ordinal()].getText());
+        st.set("NUMQUEUES", inField[field.numQueuesText.ordinal()].getText());
+        st.set("NUMSERVERS", inField[field.numServersText.ordinal()].getText());
         st.set("TIME", inField[field.stText.ordinal()].getText());
-
+        st.set("OUTFILE", inField[field.outFileText.ordinal()].getText());
     }
 
     public void launch() {

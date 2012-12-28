@@ -30,7 +30,7 @@ public class AboutDialog extends JDialog {
 
         Box b = Box.createVerticalBox();
         b.add(Box.createGlue());
-        b.add(new JLabel("JSim v0.2"));
+        b.add(new JLabel("JSim v0.3"));
         b.add(new JLabel("Copyright (C) 2007-2012  Maen Artimy"));
         b.add(new JLabel("This program comes with ABSOLUTELY NO WARRANTY."));
         b.add(new JLabel("This is free software, and you are welcome to redistribute it"));

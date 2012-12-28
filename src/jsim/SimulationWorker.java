@@ -17,6 +17,7 @@
 //    along with JSim.  If not, see <http://www.gnu.org/licenses/>.
 package jsim;
 
+import java.io.FileNotFoundException;
 import javax.swing.SwingWorker;
 import rand.*;
 import sim.*;
@@ -33,77 +34,51 @@ public class SimulationWorker extends SwingWorker<String, Void> {
     public long mu;                              // mean service time
     public int K;                               // queue size
     public int simTime;                        // simulation time
+    public int numQueues;                       // number of queues
+    public int numServers;                       // number of servers
     public double[] A = null;                          // stats array
+    public String outFile;                       // file name
 
     @Override
     protected String doInBackground() throws Exception {
         Scheduler sc;
         SimQueue qs;
-
-        // to collect stats
-        A = new double[8];
-        for (double a : A) {
-            a = 0;
-        }
+        SimOutput out = new SimOutput(numQueues, N);
 
         // Repeat the simulation N times
         for (int i = 0; i < N; i++) {
-            RandomNumber ta = new ExpoRandom(seed * (i + 1), lambda);
-            RandomNumber ts = new ExpoRandom(seed * (i + 5), mu);
+            //RandomNumber ta = new ExpoRandom(seed * (i + 1), lambda);
+            //RandomNumber ts = new ExpoRandom(seed * (i + 5), mu);
             //RandomNumber ts = new NormalRandom(456*(i+1), mu, 9);
 
-            ArrivalEvent.arrivalRate(ta);
-            DepartureEvent.serviceRate(ts);
-
-            qs = SimQueue.instance();
-            if(K>-1) {
+            qs = new SimQueue(numQueues, numServers);
+            qs.arrivalRate(new ExpoRandom(seed * (i + 1), lambda));
+            qs.serviceRate(new ExpoRandom(seed * (i + 5), mu));
+            if (K > 0) {
                 qs.setQueueSize(K);
             }
 
+            // send trace data to the SimOut
+            qs.setTrace(out);
+
             sc = Scheduler.instance();
             try {
-                sc.addEvent(new ArrivalEvent(new Time(0)));      // starts the simulation by arrival at time 0
-                sc.addEvent(new EndEvent(new Time(simTime)));    // ends the simulation at after 1000s
+                sc.addEvent(new ArrivalEvent(new Time(0), qs));      // starts the simulation by arrival at time 0
+                sc.addEvent(new EndEvent(new Time(simTime), qs));    // ends the simulation at after 1000s
             } catch (SIMException ex) {
                 System.err.println("Exception : " + ex);
                 System.exit(0);
             }
             sc.run();
 
-            A[0] += qs.numCustomersServed;
-            A[1] += (double) qs.totalQueueDelay.getTime() / qs.numCustomersServed;
-            A[2] += (double) qs.areaQueue / sc.getLastEventTime().getTime();
-            A[3] += (double) qs.areaServer / sc.getLastEventTime().getTime();
-            A[4] += qs.totalQueueDelay.getTime();
-            A[5] += qs.totalCustomers;
-            A[6] += qs.numCustomersDropped;
-            A[7] += qs.numInQueue;
+            out.update(qs, sc.getLastEventTime().getTime());
 
             setProgress((i + 1) * 100 / N);
-            SimQueue.reset();
             Scheduler.reset();
         }
 
-        // Analytical results
-        double rho = (double) mu / lambda;                // system utilization *
-        double L = rho / (1 - rho);                     // mean number of customers in the system
-        double Lq = L * rho;                                  // mean length of queue
-        double W = mu / (1 - rho);                     // mean time spent in the system *
-        double Wq = mu * L;                               // mean time spent in the queue *
+        out.printTrace(outFile);
 
-        // Note that
-        // W = lambda * L = rho * Wq
-        // Wq = lambda * Lq = W / rho
-
-        StringBuilder st = new StringBuilder();
-        st.append(String.format("Total Customers Served = %4.2f\n", A[0] / N));
-        st.append(String.format("Average Queue Delay = %4.2f (Analytically %4.2f)\n", A[1] / N, Wq));
-        st.append(String.format("Average Queue size = %4.2f : (Analytically %4.2f)\n", A[2] / N, Lq));
-        st.append(String.format("Average utilization = %4.2f : (Analytically %4.2f)\n", A[3] / N, rho));
-        st.append(String.format("Total Queue Delay = %4.2f\n", A[4] / N));
-        st.append("Sanity check = " + A[0] + " + " + A[6] + " + " + A[7] + " = " + A[5] + " " + (A[0] + A[6] + A[7] == A[5]));
-
-        System.out.println(st);
-        return st.toString();
+        return out.getAnalyticalResults(lambda, mu) + out.getSimResults();
     }
 }
