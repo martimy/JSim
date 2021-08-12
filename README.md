@@ -4,7 +4,7 @@ JSim is a Java-based discrete event simulator of an M/M/s queue system. The targ
 
 JSim includes a library of classes that can be used to modify the application to simulate other types of queuing systems as well. Therefore, it may be used as starting point to build larger, application specific simulator.
 
-![JSim GUI](images/queue.png){ width=6cm }
+![JSim GUI](images/queue.png)
 
 ## Intended Audience
 Science/Research, Education, Manufacturing, Telecommunications Industry, End Users/Desktop, Engineering
@@ -13,7 +13,7 @@ Science/Research, Education, Manufacturing, Telecommunications Industry, End Use
 
 Clone the code then compile and run JSim. You should get a results similar to below when using the default settings in settings.ini file.
 
-![JSim GUI](images/gui.png){ width=6cm }
+![JSim GUI](images/gui.png)
 
 
 ## Developer Documentation
